@@ -84,7 +84,7 @@
 
 
 #define MAX_MENU_DEPTH 10       // max sub menu depth
-typedef void (*FP_MENU)(void); 
+typedef void (*FP_MENU)(void);
 
 typedef struct
 {
@@ -102,9 +102,9 @@ enum
   ICON_PRINT,
   ICON_EXTRUDE,
   ICON_FAN,
-  ICON_SETTINGS,
   ICON_LEVELING,
-  
+  ICON_SETTINGS,
+
   ICON_INC,
   ICON_DEC,
   ICON_NOZZLE,
@@ -123,18 +123,18 @@ enum
   ICON_X_DEC,
   ICON_Y_DEC,
   ICON_Z_DEC,
-  
+
   ICON_X_HOME,
   ICON_Y_HOME,
   ICON_Z_HOME,
-  
+
   ICON_FOLDER,
   ICON_FILE,
   ICON_PAGE_UP,
   ICON_PAGE_DOWN,
   ICON_PAUSE,
   ICON_RESUME,
-  
+
   ICON_LOAD,
   ICON_UNLOAD,
   ICON_SLOW_SPEED,
@@ -143,7 +143,7 @@ enum
   ICON_E_1_MM,
   ICON_E_5_MM,
   ICON_E_10_MM,
-  
+
   ICON_FAN_FULL_SPEED,
   ICON_FAN_HALF_SPEED,
   ICON_POWER_OFF,
@@ -152,7 +152,7 @@ enum
   ICON_SCREEN_INFO,
   ICON_DISCONNECT,
   ICON_BAUDRATE,
-  
+
   ICON_PERCENTAGE,
   ICON_BABYSTEP,
   ICON_001_MM,
@@ -166,16 +166,15 @@ enum
 
 
 typedef struct
-{	
+{
   bool wait;       //Whether wait for Marlin's response
   bool rx_ok;      //Whether receive Marlin's response
   bool connected;  //Whether have connected to Marlin
-#ifdef ONBOARD_SD_SUPPORT     
+#ifdef ONBOARD_SD_SUPPORT
   bool printing;   //Whether the host is busy in printing execution. ( USB serial printing and GCODE print from onboard)
-#endif  
+#endif
 }HOST;
 
 extern HOST infoHost;
 
 #endif
-

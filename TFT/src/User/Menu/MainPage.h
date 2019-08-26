@@ -9,12 +9,11 @@ enum
   MAIN_PRINT,
   MAIN_EXTRUDE,
   MAIN_FAN,
-  MAIN_SETTING,
   MAIN_LEVELING,
+  MAIN_SETTING,
   TOTAL_MAIN,
 };
 
 void menuMain(void);
 
 #endif
-

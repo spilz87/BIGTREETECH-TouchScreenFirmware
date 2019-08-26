@@ -1,13 +1,13 @@
 #include "boot.h"
 #include "includes.h"
 
-const GUI_RECT iconUpdateRect = {(LCD_WIDTH - ICON_WIDTH)/2,              (LCD_HEIGHT - ICON_HEIGHT)/2, 
+const GUI_RECT iconUpdateRect = {(LCD_WIDTH - ICON_WIDTH)/2,              (LCD_HEIGHT - ICON_HEIGHT)/2,
                                  (LCD_WIDTH - ICON_WIDTH)/2 + ICON_WIDTH, (LCD_HEIGHT - ICON_HEIGHT)/2 + ICON_HEIGHT};
-const GUI_RECT labelUpdateRect = {0,        (LCD_HEIGHT - ICON_HEIGHT)/2 + ICON_HEIGHT, 
+const GUI_RECT labelUpdateRect = {0,        (LCD_HEIGHT - ICON_HEIGHT)/2 + ICON_HEIGHT,
                                  LCD_WIDTH, (LCD_HEIGHT - ICON_HEIGHT)/2 + ICON_HEIGHT + BYTE_HEIGHT};
 
 const char iconBmpName[][20]={
-"Heat", "Move", "Home", "Print", "Extrude", "Fan", "Settings", "Leveling",
+"Heat", "Move", "Home", "Print", "Extrude", "Fan", "Leveling", "Settings",
 "Inc",  "Dec", "Nozzle", "Hotbed", "Temp_1", "Temp_5", "Temp_10", "Stop", "Back",
 "Inc_X", "Inc_Y", "Inc_Z", "Mmm_01", "Mmm_1", "Mmm_10", "Dec_X", "Dec_Y","Dec_Z",
 "Home_X", "Home_Y", "Home_Z",
@@ -17,33 +17,33 @@ const char iconBmpName[][20]={
 "Full", "Half",
 "PowerOff", "Language", "TP_Adjust", "About", "Disconnect", "BaudRate",
 "Percentage", "BabyStep", "Mmm_001", "OnBoardSD", "OnTFTSD", "U_Disk", "Runout",
-}; 
+};
 
 u8 scanUpdateFile(void)
 {
   DIR dir;
   u8 rst = 0;
-  
+
   if (f_opendir(&dir, BMP_ROOT_DIR) == FR_OK)
   {
-    rst |= BMP;  
+    rst |= BMP;
     f_closedir(&dir);
   }
   if (f_opendir(&dir, FONT_ROOT_DIR) == FR_OK)
   {
-    rst |= FONT;  
+    rst |= FONT;
     f_closedir(&dir);
   }
   return rst;
 }
 
-bool bmpDecode(char *bmp,u32 addr)  
-{  
+bool bmpDecode(char *bmp,u32 addr)
+{
   FIL   bmpFile;
-  char  magic[2];  
-  int   w,h,bytePerLine;  
-  short bpp; 
-  int   offset;   
+  char  magic[2];
+  int   w,h,bytePerLine;
+  short bpp;
+  int   offset;
   u8    buf[256];
   u8    lcdcolor[4];
   u16   bnum=0;
@@ -54,48 +54,48 @@ bool bmpDecode(char *bmp,u32 addr)
   if(f_open(&bmpFile,bmp,FA_OPEN_EXISTING | FA_READ)!=FR_OK)
     return false;
 
-  f_read(&bmpFile, magic, 2 ,&mybr);  
-  if (memcmp(magic, "BM", 2))  
+  f_read(&bmpFile, magic, 2 ,&mybr);
+  if (memcmp(magic, "BM", 2))
     return false;
-  
-  f_lseek(&bmpFile, 10);  
-  f_read(&bmpFile, &offset, sizeof(int),&mybr);  
 
-  f_lseek(&bmpFile, 18);  
-  f_read(&bmpFile, &w, sizeof(int),&mybr);  
-  f_read(&bmpFile, &h, sizeof(int),&mybr);  
+  f_lseek(&bmpFile, 10);
+  f_read(&bmpFile, &offset, sizeof(int),&mybr);
 
-  f_lseek(&bmpFile, 28);  
-  f_read(&bmpFile, &bpp, sizeof(short),&mybr);  
+  f_lseek(&bmpFile, 18);
+  f_read(&bmpFile, &w, sizeof(int),&mybr);
+  f_read(&bmpFile, &h, sizeof(int),&mybr);
+
+  f_lseek(&bmpFile, 28);
+  f_read(&bmpFile, &bpp, sizeof(short),&mybr);
   if(bpp<24)
     return false;
-  bpp >>=3; 
-  bytePerLine=w*bpp;     
+  bpp >>=3;
+  bytePerLine=w*bpp;
   if(bytePerLine%4 !=0) //bmp
-    bytePerLine=(bytePerLine/4+1)*4;  
-  
+    bytePerLine=(bytePerLine/4+1)*4;
+
   for(bnum=0;bnum<(w*h*2+4095)/4096;bnum++)
   {
     W25Qxx_EraseSector(addr+bnum*4096);
   }
   bnum=0;
-    
+
   for(int j=0; j<h; j++)
-  {  
+  {
     f_lseek(&bmpFile, offset+(h-j-1)*bytePerLine);
     for(int i=0; i<w; i++)
     {
       f_read(&bmpFile,(char *)&lcdcolor,bpp,&mybr);
 
       pix.RGB.r=lcdcolor[2]>>3;
-      pix.RGB.g=lcdcolor[1]>>2;        
+      pix.RGB.g=lcdcolor[1]>>2;
       pix.RGB.b=lcdcolor[0]>>3;
 
 //      GUI_DrawPixel(i,j,pix.color);
-      
+
       buf[bnum++]=(u8)(pix.color>>8);
       buf[bnum++]=(u8)(pix.color&0xFF);
-      
+
       if(bnum==256)
       {
         W25Qxx_WritePage(buf,addr,256);
@@ -103,18 +103,18 @@ bool bmpDecode(char *bmp,u32 addr)
         bnum=0;
       }
     }
-  }    
+  }
 
   W25Qxx_WritePage(buf,addr,bnum);
   addr+=bnum;
   f_close(&bmpFile);
 
-  return true;  
-}  
+  return true;
+}
 
 void updateIcon(void)
 {
-  char nowBmp[30];  
+  char nowBmp[30];
   GUI_Clear(BLACK);
   GUI_DispString(100, 5, (u8*)"Icon Updating...!",0);
 
@@ -143,20 +143,20 @@ void updateFont(char *font, u32 addr)
   char buffer[128];
   FIL  myfp;
   u8*  tempbuf = NULL;
-  
+
   if (f_open(&myfp, font, FA_OPEN_EXISTING|FA_READ) != FR_OK)  return;
 
   tempbuf = malloc(4096);
-  if (tempbuf == NULL)  return;  
+  if (tempbuf == NULL)  return;
   GUI_Clear(BLACK);
   my_sprintf((void *)buffer,"%s Size: %dKB",font, (u32)f_size(&myfp)>>10);
   GUI_DispString(40, 100, (u8*)buffer,0);
   GUI_DispString(40, 140, (u8*)"Updating:   %",0);
-  
+
   while(!f_eof(&myfp))
   {
     if (f_read(&myfp, tempbuf, 4096, &rnum) != FR_OK) break;
-    
+
     W25Qxx_EraseSector(addr+offset);
     W25Qxx_WriteBuffer(tempbuf,addr+offset,4096);
     offset+=rnum;
@@ -167,7 +167,7 @@ void updateFont(char *font, u32 addr)
     }
     if(rnum!=4096)break;
   }
-  
+
   f_close(&myfp);
   free(tempbuf);
 }

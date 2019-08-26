@@ -16,8 +16,8 @@ const char *const en_pack[LABEL_NUM]={
   EN_PRINT,
   EN_EXTRUDE,
   EN_FAN,
-  EN_SETTINGS,
   EN_LEVELING,
+  EN_SETTINGS,
   EN_INC,
   EN_DEC,
   EN_NOZZLE,
@@ -106,8 +106,8 @@ const char *const cn_pack[LABEL_NUM]={
   CN_PRINT,
   CN_EXTRUDE,
   CN_FAN,
-  CN_SETTINGS,
   CN_LEVELING,
+  CN_SETTINGS,
   CN_INC,
   CN_DEC,
   CN_NOZZLE,
@@ -196,8 +196,8 @@ const char *const ru_pack[LABEL_NUM]={
   RU_PRINT,
   RU_EXTRUDE,
   RU_FAN,
-  RU_SETTINGS,
   RU_LEVELING,
+  RU_SETTINGS,
   RU_INC,
   RU_DEC,
   RU_NOZZLE,
@@ -286,8 +286,8 @@ const char *const jp_pack[LABEL_NUM]={
   JP_PRINT,
   JP_EXTRUDE,
   JP_FAN,
-  JP_SETTINGS,
   JP_LEVELING,
+  JP_SETTINGS,
   JP_INC,
   JP_DEC,
   JP_NOZZLE,
@@ -376,8 +376,8 @@ const char *const am_pack[LABEL_NUM]={
   AM_PRINT,
   AM_EXTRUDE,
   AM_FAN,
-  AM_SETTINGS,
   AM_LEVELING,
+  AM_SETTINGS,
   AM_INC,
   AM_DEC,
   AM_NOZZLE,
@@ -466,8 +466,8 @@ const char *const de_pack[LABEL_NUM]={
   DE_PRINT,
   DE_EXTRUDE,
   DE_FAN,
-  DE_SETTINGS,
   DE_LEVELING,
+  DE_SETTINGS,
   DE_INC,
   DE_DEC,
   DE_NOZZLE,
@@ -597,8 +597,6 @@ u8 * textSelect(u8 sel)
     case JAPANESE:  return (u8 *)jp_pack[sel];
     case GERMAN:    return (u8 *)de_pack[sel];
 //    case ARMENIAN:  return (u8 *)am_pack[sel];
-    default:        return NULL;					 
+    default:        return NULL;
   }
 }
-
-
