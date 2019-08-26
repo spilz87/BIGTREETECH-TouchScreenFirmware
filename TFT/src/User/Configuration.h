@@ -5,7 +5,7 @@
 #define EXTRUDER_NUM 1    //set in 1~6
 #define FAN_NUM      1    //set in 1~6
 
-#define HEAT_MAX_TEMP    {150,    275,       275,       275,       275,       275,       275}    //max temperature can be set
+#define HEAT_MAX_TEMP    {100,    275,       275,       275,       275,       275,       275}    //max temperature can be set
 #define HEAT_SIGN_ID     {"B:",   "T0:",     "T1:",     "T2:",     "T3:",     "T4:",     "T5:"}
 #define HEAT_DISPLAY_ID  {"Bed",  "T0",      "T1",      "T2",      "T3",      "T4",      "T5"}
 #define HEAT_CMD         {"M140", "M104 T0", "M104 T1", "M104 T2", "M104 T3", "M104 T4", "M104 T5" };
@@ -34,7 +34,7 @@
  * Current color options from lcd.h: BLACK, BLUE, BROWN, BRRED, CYAN, GBLUE, GRAY, GREEN, MAGENTA, RED, WHITE, YELLOW
  */
 #define ST7920_BKCOLOR BLACK
-#define ST7920_FNCOLOR WHITE
+#define ST7920_FNCOLOR GBLUE
 
 // Text displayed at the top of the LCD in 12864 mode
 #define ST7920_BANNER_TEXT "LCD12864 Simulator"
@@ -43,7 +43,7 @@
 #define ONBOARD_SD_SUPPORT
 #ifdef ONBOARD_SD_SUPPORT
   #define M27_AUTOREPORT                      // Disable the M27 polling if you enable enable Marlin AUTO_REPORT_SD_STATUS
-  #define M27_REFRESH                 3       // Time in sec for M27 command 
+  #define M27_REFRESH                 3       // Time in sec for M27 command
   #define M27_WATCH_OTHER_SOURCES    true     // if true the polling on M27 report is always active. Case: SD print start not from TFT35
 #endif
 
@@ -53,5 +53,5 @@
  * This function is suitable for Delta Printer.
  */
 //#define HOME_BEFORE_PLR
-  
+
 #endif
