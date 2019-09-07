@@ -3,14 +3,14 @@
 
 
 QUEUE infoCmd;       //
-QUEUE infoCacheCmd;  //only heatHasWaiting() is false 
-                     //the cmd in this cache will move to infoCmd 
+QUEUE infoCacheCmd;  //only heatHasWaiting() is false
+                     //the cmd in this cache will move to infoCmd
 
 static u8 cmd_index=0;
 
 //
 static bool cmd_seen(char code)
-{  
+{
   for(cmd_index = 0; infoCmd.queue[infoCmd.index_r][cmd_index] != 0 && cmd_index < CMD_MAX_CHAR; cmd_index++)
   {
     if(infoCmd.queue[infoCmd.index_r][cmd_index] == code)
@@ -35,18 +35,18 @@ static float cmd_float(void)
 bool storeCmd(const char * format,...)
 {
   QUEUE *pQueue = &infoCmd;
-  
+
   if (pQueue->count >= CMD_MAX_LIST)
-  {  
+  {
     reminderMessage(LABEL_BUSY, STATUS_BUSY);
     return false;
   }
-  
+
   my_va_list ap;
   my_va_start(ap,format);
   my_vsprintf(pQueue->queue[pQueue->index_w], format, ap);
   my_va_end(ap);
-  
+
   pQueue->index_w = (pQueue->index_w + 1) % CMD_MAX_LIST;
   pQueue->count++;
 
@@ -56,19 +56,19 @@ bool storeCmd(const char * format,...)
 void mustStoreCmd(const char * format,...)
 {
   QUEUE *pQueue = &infoCmd;
-  
+
   if(pQueue->count >= CMD_MAX_LIST) reminderMessage(LABEL_BUSY, STATUS_BUSY);
 
   while (pQueue->count >= CMD_MAX_LIST)
-  {  
+  {
     loopProcess();
   }
-  
+
   my_va_list ap;
   my_va_start(ap,format);
   my_vsprintf(pQueue->queue[pQueue->index_w], format, ap);
   my_va_end(ap);
-  
+
   pQueue->index_w = (pQueue->index_w + 1) % CMD_MAX_LIST;
   pQueue->count++;
 }
@@ -76,19 +76,19 @@ void mustStoreCmd(const char * format,...)
 void mustStoreCacheCmd(const char * format,...)
 {
   QUEUE *pQueue = &infoCacheCmd;
-  
+
   if(pQueue->count == CMD_MAX_LIST) reminderMessage(LABEL_BUSY, STATUS_BUSY);
 
   while (pQueue->count >= CMD_MAX_LIST)
-  {  
+  {
     loopProcess();
   }
-  
+
   my_va_list ap;
   my_va_start(ap,format);
   my_vsprintf(pQueue->queue[pQueue->index_w], format, ap);
   my_va_end(ap);
-  
+
   pQueue->index_w = (pQueue->index_w + 1) % CMD_MAX_LIST;
   pQueue->count++;
 }
@@ -97,7 +97,7 @@ bool moveCacheToCmd(void)
 {
   if(infoCmd.count >= CMD_MAX_LIST) return false;
   if(infoCacheCmd.count == 0) return false;
-  
+
   storeCmd("%s", infoCacheCmd.queue[infoCacheCmd.index_r]);
   infoCacheCmd.count--;
   infoCacheCmd.index_r = (infoCacheCmd.index_r + 1) % CMD_MAX_LIST;
@@ -106,16 +106,18 @@ bool moveCacheToCmd(void)
 
 void clearCmdQueue(void)
 {
-  infoCmd.count = infoCmd.index_w = infoCmd.index_r =0;  
+  infoCmd.count = infoCmd.index_w = infoCmd.index_r =0;
   infoCacheCmd.count = infoCacheCmd.index_w = infoCacheCmd.index_r =0;
   heatSetUpdateWaiting(false);
 }
 
 void sendQueueCmd(void)
 {
-  if(infoHost.wait == true)    return;  
-  if(infoCmd.count == 0)       return;
-  
+  static bool waitIsSent = false;
+  if(infoHost.wait == true){busyIndicator(STATUS_UNCONNECT);if(!waitIsSent){Serial_Puts(";PH wait true\r\n");waitIsSent = true;}return;}
+  if(infoCmd.count == 0){busyIndicator(STATUS_IDLE);return;}       
+  busyIndicator(STATUS_NORMAL);
+  waitIsSent = false;
   u16  cmd=0;
   switch(infoCmd.queue[infoCmd.index_r][0])
   {
@@ -126,17 +128,17 @@ void sendQueueCmd(void)
         case 27: //M27
           printSetUpdateWaiting(false);
         break;
-        
+
         #ifdef PS_ON_PIN
         case 80: //M80
           PS_ON_On();
           break;
-        
+
         case 81: //M81
           PS_ON_Off();
           break;
         #endif
-        
+
         case 82: //M82
           eSetRelative(false);
         break;
@@ -157,8 +159,8 @@ void sendQueueCmd(void)
           TOOL i = heatGetCurrentToolNozzle();
           if(cmd_seen('T')) i = (TOOL)(cmd_value() + NOZZLE0);
           if(cmd_seen('S'))
-          {	
-            heatSetTargetTemp(i, cmd_value()); 
+          {
+            heatSetTargetTemp(i, cmd_value());
           }
           else
           {
@@ -180,7 +182,7 @@ void sendQueueCmd(void)
           if(cmd_seen('P')) i = cmd_value();
           if(cmd_seen('S'))
           {
-            fanSetSpeed(i, cmd_value()); 
+            fanSetSpeed(i, cmd_value());
           }
           else
           {
@@ -196,7 +198,7 @@ void sendQueueCmd(void)
         {
           u8 i = 0;
           if(cmd_seen('P')) i = cmd_value();
-          fanSetSpeed(i, 0); 
+          fanSetSpeed(i, 0);
           break;
         }
 
@@ -205,11 +207,11 @@ void sendQueueCmd(void)
 
         case 190: //M190
           infoCmd.queue[infoCmd.index_r][2]='4';
-          heatSetIsWaiting(BED,true);											
+          heatSetIsWaiting(BED,true);
         case 140: //M140
           if(cmd_seen('S'))
           {
-            heatSetTargetTemp(BED,cmd_value()); 
+            heatSetTargetTemp(BED,cmd_value());
           }
           else
           {
@@ -219,11 +221,11 @@ void sendQueueCmd(void)
             heatSetSendWaiting(BED, false);
           }
           break;
-          
+
         case 220: //M220
           if(cmd_seen('S'))
           {
-            speedSetPercent(0,cmd_value()); 
+            speedSetPercent(0,cmd_value());
           }
           else
           {
@@ -236,7 +238,7 @@ void sendQueueCmd(void)
         case 221: //M221
           if(cmd_seen('S'))
           {
-            speedSetPercent(1,cmd_value()); 
+            speedSetPercent(1,cmd_value());
           }
           else
           {
@@ -258,38 +260,38 @@ void sendQueueCmd(void)
         {
           AXIS i;
           for(i=X_AXIS;i<TOTAL_AXIS;i++)
-          {						
-            if(cmd_seen(axis_id[i]))			
+          {
+            if(cmd_seen(axis_id[i]))
             {
               coordinateSetAxis(i,cmd_float());
             }
           }
-          if(cmd_seen('F'))			
+          if(cmd_seen('F'))
           {
             coordinateSetFeedRate(cmd_value());
           }
           break;
         }
-        
+
         case 28: //G28
           break;
 
         case 90: //G90
-          coorSetRelative(false);                
+          coorSetRelative(false);
           break;
 
         case 91: //G91
-          coorSetRelative(true);          
+          coorSetRelative(true);
           break;
 
         case 92: //G92
         {
           AXIS i;
           for(i=X_AXIS;i<TOTAL_AXIS;i++)
-          {						
-            if(cmd_seen(axis_id[i]))			
-            {                       
-              coordinateSetAxis(i,cmd_float());                 
+          {
+            if(cmd_seen(axis_id[i]))
+            {
+              coordinateSetAxis(i,cmd_float());
             }
           }
           break;
@@ -302,7 +304,7 @@ void sendQueueCmd(void)
       heatSetCurrentToolNozzle((TOOL)(cmd + NOZZLE0));
       break;
   }
-  
+
   Serial_Puts(infoCmd.queue[infoCmd.index_r]); //
   infoCmd.count--;
   infoCmd.index_r = (infoCmd.index_r + 1) % CMD_MAX_LIST;
