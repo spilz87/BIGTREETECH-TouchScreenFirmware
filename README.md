@@ -1,3 +1,24 @@
+it's one of my first time I create a Fork like this,
+be free to tell me if I do wrong and to report bugs
+
+thanks everyone
+
+What I modify in my Fork :
+- increase rx buffer size from 300 to 600
+- switch settings and leveling icons
+- change the way to switch mode :
+  - TFT mode -> LCD12864 mode : go to "Settings"->"LCD Mode"
+  - LCD12864 mode -> TFT mode : just touch teh screen
+
+What I want to add :
+- bltouch settings in home menu (waiting to find new icons)
+- desable SD card use in TFT mode
+  - In "Print"->"TFT SD" : I want to dial with marlin to get data from sd card and run it only through marlin
+- change the icon of move "X+" "X-" "Y+" "Y-": I prefer the are horizontal and vertical
+- maybe find a new skin (but I'm not a designer)
+...
+
+
 ### How to install vscode and platformio for compile
 - Install the compilation environment, We recommend vscode + platformio. If you have already installed it, please skip this step.  If not, please see [here](https://github.com/bigtreetech/Document/blob/master/How%20to%20install%20VScode+Platformio.md).
 ### how to compile firmware
