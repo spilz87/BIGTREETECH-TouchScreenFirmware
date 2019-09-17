@@ -86,12 +86,20 @@ void LCD_LoopEncoder(void)
   }
 }
 
+u8 isPress(void);
 void loopCheckMode(void)
 {
   if(isPrinting()) return;
-  if(LCD_ReadBtn(LCD_CHANGE_MODE_INTERVALS))
+
+  if(infoMenu.menu[infoMenu.cur] == menuST7920){
+    if(isPress()){
+      infoMenu.menu[++infoMenu.cur] = menuMode;
+    }
+  }
+
+  /*if(LCD_ReadBtn(LCD_CHANGE_MODE_INTERVALS))
   {
     infoMenu.menu[++infoMenu.cur] = menuMode;
-  }
+  }*/
 }
 #endif

@@ -12,19 +12,19 @@ void infoSettingsReset(void)
   infoSettings.mode = SERIAL_TSC;
   infoSettings.runout = 0;
   infoSettings.rotate_ui = 0;
-  storePara();  
+  storePara();
 }
 
 void menuInfo(void)
 {
   const char* hardware = "Board   : BIGTREETECH_" HARDWARE_VERSION;
   const char* firmware = "Firmware: "HARDWARE_VERSION"." STRINGIFY(SOFTWARE_VERSION) " " __DATE__;
-  
+
   u16 HW_X = (LCD_WIDTH - my_strlen((u8 *)hardware)*BYTE_WIDTH)/2;
   u16 FW_X = (LCD_WIDTH - my_strlen((u8 *)firmware)*BYTE_WIDTH)/2;
   u16 centerY = LCD_HEIGHT/2;
   u16 startX = MIN(HW_X, FW_X);
-  
+
   GUI_Clear(BLACK);
 
   GUI_DispString(startX, centerY - BYTE_HEIGHT, (u8 *)hardware, 0);
@@ -38,15 +38,17 @@ void menuInfo(void)
 
 void menuDisconnect(void)
 {
-  GUI_Clear(BLACK);
+  /*GUI_Clear(BLACK);
   GUI_DispStringInRect(20, 0, LCD_WIDTH-20, LCD_HEIGHT, textSelect(LABEL_DISCONNECT_INFO), 0);
 
   Serial_DeConfig();
   while(!isPress());
   while(isPress());
   Serial_Config(infoSettings.baudrate);
-  
-  infoMenu.cur--;
+
+  infoMenu.cur--;*/
+
+  infoMenu.menu[++infoMenu.cur] = menuMode;
 }
 
 
@@ -117,28 +119,28 @@ void menuSettings(void)
         infoSettings.rotate_ui = !infoSettings.rotate_ui;
         LCD_RefreshDirection();
         TSC_Calibration();
-        menuDrawPage(&settingsItems);        
+        menuDrawPage(&settingsItems);
         break;
-      
-      case KEY_ICON_1: 
+
+      case KEY_ICON_1:
         infoSettings.language = (infoSettings.language + 1) % LANGUAGE_NUM;
         menuDrawPage(&settingsItems);
         break;
-      
+
       case KEY_ICON_2:
         TSC_Calibration();
         menuDrawPage(&settingsItems);
         break;
-      
+
       case KEY_ICON_3:
         infoMenu.menu[++infoMenu.cur] = menuInfo;
         break;
       case KEY_ICON_4:
         infoMenu.menu[++infoMenu.cur] = menuDisconnect;
         break;
-      
+
       case KEY_ICON_5:
-        item_baudrate_i = (item_baudrate_i + 1) % ITEM_BAUDRATE_NUM;                
+        item_baudrate_i = (item_baudrate_i + 1) % ITEM_BAUDRATE_NUM;
         settingsItems.items[key_num] = itemBaudrate[item_baudrate_i];
         menuDrawItem(&settingsItems.items[key_num], key_num);
         infoSettings.baudrate = item_baudrate[item_baudrate_i];
@@ -146,7 +148,7 @@ void menuSettings(void)
         break;
       #ifdef FIL_RUNOUT_PIN
       case KEY_ICON_6:
-        item_runout_i = (item_runout_i + 1) % ITEM_RUNOUT_NUM;                
+        item_runout_i = (item_runout_i + 1) % ITEM_RUNOUT_NUM;
         settingsItems.items[key_num] = itemRunout[item_runout_i];
         menuDrawItem(&settingsItems.items[key_num], key_num);
         infoSettings.runout = item_runout[item_runout_i];
@@ -155,11 +157,11 @@ void menuSettings(void)
       case KEY_ICON_7:
         infoMenu.cur--;
         break;
-      
+
       default:
         break;
     }
-    loopProcess();		
+    loopProcess();
   }
 
   if(memcmp(&now, &infoSettings, sizeof(SETTINGS)))

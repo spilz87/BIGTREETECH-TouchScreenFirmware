@@ -233,7 +233,7 @@ void loopProcess(void)
   sendQueueCmd();                     //Parse and send Gcode commands in the queue
 
   parseACK();                         //Parse the received slave response information
-  
+
   parseRcvGcode();                    //Parse the received Gcode from other UART, such as: ESP3D, etc...
 
   loopCheckHeater();			            //Temperature related settings
@@ -255,7 +255,7 @@ void loopProcess(void)
 #endif
 
 #if LCD_ENCODER_SUPPORT
-  loopCheckMode();
+  // loopCheckMode();
 #endif
 
 #ifdef FIL_RUNOUT_PIN

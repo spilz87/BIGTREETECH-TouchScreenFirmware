@@ -19,7 +19,7 @@ void Serial_ReSourceInit(void)
   Buzzer_Config();
 #endif
   Serial_Config(infoSettings.baudrate);
-  
+
 #ifdef U_DISK_SUPPROT
   USBH_Init(&USB_OTG_Core, USB_OTG_FS_CORE_ID, &USB_Host, &USBH_MSC_cb, &USR_cb);
 #endif
@@ -38,17 +38,17 @@ void infoMenuSelect(void)
       heatSetUpdateTime(100);
       infoMenu.menu[infoMenu.cur] = menuMain;
       LOGO_ReadDisplay();
-      while(OS_GetTime() - startUpTime < 300)  //Display 3s logo
-      {                                                                                                                     
-        loopProcess();	
+      while(OS_GetTime() - startUpTime < 100)  //Display 3s logo
+      {
+        loopProcess();
       }
-      heatSetUpdateTime(300);
+      heatSetUpdateTime(100);
       break;
     }
-      
+
     #ifdef ST7920_SPI
     case LCD12864:
-      infoMenu.menu[infoMenu.cur] = menuST7920;      
+      infoMenu.menu[infoMenu.cur] = menuST7920;
       break;
     #endif
   }
@@ -56,8 +56,8 @@ void infoMenuSelect(void)
 
 #if LCD_ENCODER_SUPPORT
 void menuMode(void)
-{  
-  RADIO modeRadio = {
+{
+  /*RADIO modeRadio = {
     {(u8*)"Serial Touch Screen", (u8*)ST7920_BANNER_TEXT, (u8*)"LCD2004 Simulator"},
     SIMULATOR_XSTART, SIMULATOR_YSTART,
     BYTE_HEIGHT*2, 2,
@@ -65,12 +65,12 @@ void menuMode(void)
   };
   int16_t nowEncoder = encoderPosition = 0;
   int8_t  nowMode = modeRadio.select = infoSettings.mode;
-  
+
   GUI_Clear(BLACK);
   RADIO_Create(&modeRadio);
   Serial_ReSourceDeInit();
   while(LCD_ReadBtn(LCD_BUTTON_INTERVALS));      //wait for button release
-  
+
   while(infoMenu.menu[infoMenu.cur] == menuMode)
   {
     if(LCD_ReadBtn(LCD_BUTTON_INTERVALS))
@@ -81,16 +81,23 @@ void menuMode(void)
     {
       nowMode = limitValue(0, nowMode + encoderPosition, modeRadio.num - 1);
       RADIO_Select(&modeRadio, nowMode);
-      encoderPosition = 0;    
+      encoderPosition = 0;
     }
-    
+
     LCD_LoopEncoder();
   }
   if(infoSettings.mode != nowMode)
   {
     infoSettings.mode = nowMode;
     storePara();
-  }
+  }*/
+  Serial_ReSourceDeInit();
+  if(infoSettings.mode == SERIAL_TSC)
+    infoSettings.mode = LCD12864;
+  else  if(infoSettings.mode == LCD12864)
+    infoSettings.mode = SERIAL_TSC;
+  storePara();
+
   infoMenuSelect();
 }
 #endif

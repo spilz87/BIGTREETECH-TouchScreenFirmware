@@ -30,7 +30,7 @@
     #define EN_ROTATE_UI            "Rotate UI"
     #define EN_TOUCHSCREEN_ADJUST   "TS Adjust"
     #define EN_SCREEN_INFO          "Info"
-    #define EN_DISCONNECT           "Disconnect"
+    #define EN_DISCONNECT           "LCD Mode" // "Disconnect"
     #define EN_BAUDRATE_115200      "115200"
     #define EN_BAUDRATE_250000      "250000"
     #define EN_RUNOUT_OFF           "Runout OFF"
@@ -38,11 +38,11 @@
     #define EN_PERCENTAGE           "Percentage"
     #define EN_BABYSTEP             "BabyStep"
     #define EN_PERCENTAGE_SPEED     "Speed"
-    #define EN_PERCENTAGE_FLOW      "Flow"    
+    #define EN_PERCENTAGE_FLOW      "Flow"
     #define EN_VALUE_ZERO           "Zero"
-    #define EN_1_DEGREE             "1¡æ"
-    #define EN_5_DEGREE             "5¡æ"
-    #define EN_10_DEGREE            "10¡æ"
+    #define EN_1_DEGREE             "1 C"
+    #define EN_5_DEGREE             "5 C"
+    #define EN_10_DEGREE            "10 C"
     #define EN_X_INC                "X+"
     #define EN_Y_INC                "Y+"
     #define EN_Z_INC                "Z+"
@@ -77,20 +77,20 @@
     #define EN_WARNING              "Warning"
     #define EN_STOP_PRINT           "Stop printing?"
     #define EN_CONFIRM              "Confirm"
-    
+
     #define EN_TFTSD                "TFT SD"
     #define EN_READ_TFTSD_ERROR     "Read TFT SD card error!"
     #define EN_TFTSD_INSERTED       "Card inserted!"
     #define EN_TFTSD_REMOVED        "Card removed!"
-    
+
     #define EN_U_DISK               "U Disk"
     #define EN_READ_U_DISK_ERROR    "Read U Disk error!"
     #define EN_U_DISK_INSERTED      "U Disk inserted!"
     #define EN_U_DISK_REMOVED       "U Disk removed!"
-    
+
     #define EN_ONBOARDSD            "OnboardSD"
     #define EN_READ_ONBOARDSD_ERROR "Read Onboard SD card error!"
-    
+
     #define EN_FILAMENT_RUNOUT      "filament runout!"
-    
+
 #endif
